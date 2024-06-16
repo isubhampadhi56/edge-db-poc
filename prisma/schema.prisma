@@ -35,7 +35,7 @@ model product {
 model user {
     userId Int @id @default(autoincrement())
     storeId Int
-    usernames String
+    username String
     password String
     role String
     storeRel store @relation(fields: [storeId],references: [storeId])
