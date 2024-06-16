@@ -1,0 +1,73 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("SQL_HOST")
+}
+model store {
+    storeId Int @id @default(autoincrement())
+    storeName String
+    address String
+    description String
+    products product[]
+    users user[]
+    category category[]
+    sales sales[]
+    orders orders[]
+}
+model product {
+    storeId Int
+    productId Int @id @default(autoincrement())
+    categoryId Int
+    supplierId Int
+    productName String
+    quantity Int
+    price Float
+    description String
+    lastUpdated DateTime @default(now())
+    sales sales[]
+    storeRel store @relation(fields: [storeId],references: [storeId])
+    categoryRel category @relation(fields: [categoryId],references: [categoryId])
+}
+
+model user {
+    userId Int @id @default(autoincrement())
+    storeId Int
+    usernames String
+    password String
+    role String
+    storeRel store @relation(fields: [storeId],references: [storeId])
+}
+
+model category{
+    categoryId Int @id @default(autoincrement())
+    storeId Int
+    categoryName String
+    description String
+    storeRel store @relation(fields: [storeId],references: [storeId])
+    products product[]
+}
+
+model sales {
+    salesId Int @id @default(autoincrement())
+    storeId    Int
+    productId Int
+    quantity   Int
+    saleDate  DateTime @default(now())
+    orders orders[]
+    shopRel       store     @relation(fields: [storeId], references: [storeId])
+    productRel    product  @relation(fields: [productId], references: [productId])
+}
+
+model orders{
+    orderId Int @id @default(autoincrement())
+    salesId Int
+    storeId Int
+    customerName String
+    customerEmail String
+    totalAmount Float
+    salesRel sales @relation(fields: [salesId], references: [salesId])
+    storeRel store @relation(fields: [storeId], references: [storeId])
+}
